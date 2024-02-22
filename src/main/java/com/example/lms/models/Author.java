@@ -1,6 +1,9 @@
 package com.example.lms.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -23,6 +26,7 @@ public class Author {
     private String name;
 
     @Column(length = 30, unique = true, nullable = false)
+
     private String email;
 
     @CreationTimestamp

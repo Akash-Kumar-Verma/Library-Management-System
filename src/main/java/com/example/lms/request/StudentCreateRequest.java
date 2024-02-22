@@ -3,6 +3,7 @@ package com.example.lms.request;
 import com.example.lms.models.Student;
 import com.example.lms.models.StudentType;
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
@@ -11,11 +12,11 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class StudentCreateRequest {
-
+    @NotBlank(message = "name must not be blank")
     private String name;
 
     private String email;
-
+    @NotBlank(message = "Phone No must not be blank")
     private String phoneNo;
 
     private String address;

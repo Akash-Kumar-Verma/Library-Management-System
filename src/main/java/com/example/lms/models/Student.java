@@ -1,5 +1,6 @@
 package com.example.lms.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,9 +41,11 @@ public class Student {
     private StudentType status;
 
     @OneToMany(mappedBy = "student")
+    @JsonIgnore
     private List<Book> noOfBook;
 
     @OneToMany(mappedBy = "student")
+    @JsonIgnore
     private List<Txn> txnList;
 
 }

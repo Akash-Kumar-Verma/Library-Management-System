@@ -4,6 +4,9 @@ import com.example.lms.models.Author;
 import com.example.lms.models.Book;
 import com.example.lms.models.BookType;
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 @Getter
@@ -12,12 +15,13 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class BookCreateRequest {
-
+    @NotBlank(message = "Name  must not be blank")
     private String name;
-
+    @NotBlank(message = "book no must not be blank")
     private String bookNo;
 
-    private int cost;
+    @Positive
+    private Integer cost;
 
     private BookType bookType;
 
