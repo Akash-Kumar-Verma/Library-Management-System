@@ -26,8 +26,10 @@ public class Author {
     private String name;
 
     @Column(length = 30, unique = true, nullable = false)
-
     private String email;
+
+    @Column(nullable = false,unique = true)
+    private String contact;
 
     @CreationTimestamp
     private Date createdOn;

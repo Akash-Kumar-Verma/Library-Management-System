@@ -29,7 +29,7 @@ public class BookController {
         // Validation should be here
         Book book = bookService.createBook(bookCreateRequest);
 
-        GenericResponse<Book> response = new GenericResponse<>(book, "", "Sucess", "200");
+        GenericResponse<Book> response = new GenericResponse<Book>(book, "", "Sucess", 200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -39,7 +39,7 @@ public class BookController {
         //  return bookService.filter(filterBy,operator,value);
 
         List<Book> list = bookService.filter(filterBy, operator, value);
-        GenericResponse<List<Book>> response = new GenericResponse<>(list, "", "success", "200");
+        GenericResponse<List<Book>> response = new GenericResponse<List<Book>>(list, "", "success", 200);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

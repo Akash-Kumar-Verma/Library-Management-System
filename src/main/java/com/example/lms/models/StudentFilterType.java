@@ -1,5 +1,7 @@
 package com.example.lms.models;
 
 public enum StudentFilterType {
-    CONTACT
+    CONTACT,
+    NAME,
+    EMAIL
 }
