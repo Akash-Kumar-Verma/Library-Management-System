@@ -1,6 +1,8 @@
 package com.example.lms.request;
 
 import com.example.lms.models.Student;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 @Getter
@@ -9,9 +11,11 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class TxnCreateRequest {
-      private String studentContact;
 
-      private String bookNo;
+    @NotBlank(message = "Book No should not be blank")
+    private String bookNo;
 
-       private Integer amount;
+    @Positive(message = "Amount should be positive")
+    private Integer amount;
+
 }

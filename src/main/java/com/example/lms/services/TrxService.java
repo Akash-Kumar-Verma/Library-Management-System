@@ -51,9 +51,9 @@ public class TrxService {
     }
 
     @Transactional(rollbackOn = {TxnException.class})
-    public String createTransaction(TxnCreateRequest txnCreateRequest) throws TxnException {
+    public String createTransaction(TxnCreateRequest txnCreateRequest,Student student) throws TxnException {
 
-        Student studentFromDb = filterStudent(StudentFilterType.CONTACT, Operator.EQUALS, txnCreateRequest.getStudentContact());
+        Student studentFromDb = filterStudent(StudentFilterType.CONTACT, Operator.EQUALS, student.getPhoneNo());
 
         Book bookFromLib = filterBook(FilterType.BOOK_NO, Operator.EQUALS, txnCreateRequest.getBookNo());
 

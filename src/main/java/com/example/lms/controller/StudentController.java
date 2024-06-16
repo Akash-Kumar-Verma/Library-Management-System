@@ -1,6 +1,7 @@
 package com.example.lms.controller;
 
 
+import com.example.lms.exception.TxnException;
 import com.example.lms.models.*;
 import com.example.lms.request.StudentCreateRequest;
 import com.example.lms.response.GenericResponse;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,9 +25,11 @@ public class StudentController {
     private AuthorService authorService;
 
     @PostMapping("/create")
-    private ResponseEntity<GenericResponse<Student>> createStudent(@RequestBody @Valid StudentCreateRequest studentCreateRequest) {
+    private ResponseEntity<GenericResponse<Student>> createStudent(@RequestBody @Valid StudentCreateRequest studentCreateRequest) throws TxnException {
         // Validation should be here
-
+        if(StringUtils.isEmpty(studentCreateRequest.getPhoneNo())){
+            throw new TxnException("student phone no can not be null.");
+        }
         return studentService.createStudent(studentCreateRequest);
     }
 

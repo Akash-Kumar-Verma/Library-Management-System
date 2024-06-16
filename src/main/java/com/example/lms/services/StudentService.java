@@ -7,18 +7,24 @@ import com.example.lms.repository.StudentRepository;
 import com.example.lms.request.StudentCreateRequest;
 import com.example.lms.response.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class StudentService {
+public class StudentService implements UserDetailsService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Value("${student.authority}")
+    private String studentAuthority;
 
     public ResponseEntity<GenericResponse<Student>> createStudent(StudentCreateRequest studentCreateRequest) {
 
@@ -26,6 +32,8 @@ public class StudentService {
         Student studentFromDB = null;
 
         if (studentList == null || studentList.isEmpty()) {
+            studentCreateRequest.setAuthority(studentAuthority);
+            System.out.println("Student Authority "+studentAuthority);
             studentFromDB = studentRepository.save(studentCreateRequest.toStudent());
             GenericResponse<Student> response = GenericResponse.<Student>builder().data(studentFromDB).code(200).message("Success").build();
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -45,5 +53,13 @@ public class StudentService {
             default:
                 return new ArrayList<>();
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String phoneNo) throws UsernameNotFoundException {
+        if(! studentRepository.findByPhoneNo(phoneNo).isEmpty()){
+            return studentRepository.findByPhoneNo(phoneNo).get(0);
+        }
+        return null;
     }
 }

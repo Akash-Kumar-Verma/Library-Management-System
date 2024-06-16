@@ -2,7 +2,6 @@ package com.example.lms.request;
 
 import com.example.lms.models.Student;
 import com.example.lms.models.StudentType;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -21,13 +20,20 @@ public class StudentCreateRequest {
 
     private String address;
 
+    private String password;
+
+    private String authority;
+
+
     public Student toStudent() {
-        return Student.builder()
-                .name(this.name)
-                .email(this.email)
-                .phoneNo(this.phoneNo)
-                .address(this.address)
-                .status(StudentType.ACTIVE)
-                .build();
+        return Student.builder().
+                name(this.name).
+                email(this.email).
+                phoneNo(this.phoneNo).
+                address(this.address).
+                password(this.password).
+                authority(this.authority).
+                status(StudentType.ACTIVE).
+                build();
     }
 }
