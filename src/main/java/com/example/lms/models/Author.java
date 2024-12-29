@@ -22,7 +22,7 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 30)
+    @Column(length = 30,nullable = false)
     private String name;
 
     @Column(length = 30, unique = true, nullable = false)

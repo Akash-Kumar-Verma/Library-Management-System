@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class Book {
     @Column(length = 30)
     private String name;
 
+    @Column(length = 30, unique = true, nullable = false)
     private String bookNo;
 
     private int cost;

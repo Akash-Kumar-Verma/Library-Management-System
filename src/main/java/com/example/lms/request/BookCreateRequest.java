@@ -17,6 +17,7 @@ import lombok.*;
 public class BookCreateRequest {
     @NotBlank(message = "Name  must not be blank")
     private String name;
+
     @NotBlank(message = "book no must not be blank")
     private String bookNo;
 

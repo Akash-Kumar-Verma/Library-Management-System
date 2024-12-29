@@ -33,32 +33,30 @@ public class TrxService {
     private int finePerDay;
 
     public Student filterStudent(StudentFilterType type, Operator operator, String value) throws TxnException {
-        List<Student> studentList =  studentService.filter(type, operator, value);
-        if(studentList == null || studentList.isEmpty()){
+        List<Student> studentList = studentService.filter(type, operator, value);
+        if (studentList == null || studentList.isEmpty()) {
             throw new TxnException("Student does not belong to my library.");
         }
-        Student studentFromDB = studentList.get(0);
-        return studentFromDB;
+        return studentList.get(0);
     }
 
     public Book filterBook(FilterType type, Operator operator, String value) throws TxnException {
-        List<Book> bookList =  bookService.filter(type, operator, value);
-        if(bookList == null || bookList.isEmpty() ){
+        List<Book> bookList = bookService.filter(type, operator, value);
+        if (bookList == null || bookList.isEmpty()) {
             throw new TxnException("Book does not belong to my library.");
         }
-        Book bookFromLib = bookList.get(0);
-        return bookFromLib;
+        return bookList.get(0);
     }
 
     @Transactional(rollbackOn = {TxnException.class})
-    public String createTransaction(TxnCreateRequest txnCreateRequest,Student student) throws TxnException {
+    public String createTransaction(TxnCreateRequest txnCreateRequest, Student student) throws TxnException {
 
         Student studentFromDb = filterStudent(StudentFilterType.CONTACT, Operator.EQUALS, student.getPhoneNo());
 
         Book bookFromLib = filterBook(FilterType.BOOK_NO, Operator.EQUALS, txnCreateRequest.getBookNo());
 
         if (bookFromLib.getStudent() != null) {
-            throw new TxnException("Book is already assigned to someone.");
+            throw new TxnException("Book is already assigned to someone else...");
         }
         String trxId = UUID.randomUUID().toString();
         Txn trx = Txn.builder()
@@ -81,11 +79,11 @@ public class TrxService {
 
         Book bookFromLib = filterBook(FilterType.BOOK_NO, Operator.EQUALS, txnReturnRequest.getBookNo());
 
-        if(bookFromLib.getStudent() != null && bookFromLib.getStudent().equals(studentFromDB)){
+        if (bookFromLib.getStudent() != null && bookFromLib.getStudent().equals(studentFromDB)) {
 
-            Txn txnFromDb =  txnRepository.findByTxnId(txnReturnRequest.getTxnId());
+            Txn txnFromDb = txnRepository.findByTxnId(txnReturnRequest.getTxnId());
 
-            if(txnFromDb == null){
+            if (txnFromDb == null) {
                 throw new TxnException("No txn has been found with this txnid.");
             }
 
@@ -98,7 +96,6 @@ public class TrxService {
             txnFromDb.setPaidAmount(amount);
             bookFromLib.setStudent(null);
             bookService.saveUpdate(bookFromLib);
-
             return amount;
 
         } else {
@@ -117,7 +114,6 @@ public class TrxService {
             int finedAmount = (dayPassed - validDays) * finePerDay;
             return txnFromDB.getPaidAmount() - finedAmount;
         }
-
         return txnFromDB.getPaidAmount();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.lms.controller;
 
+import com.example.lms.exception.TxnException;
 import com.example.lms.models.Book;
 import com.example.lms.models.FilterType;
 import com.example.lms.models.Operator;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,12 +26,20 @@ public class BookController {
     @Autowired
     private AuthorService authorService;
 
-    @PostMapping("/create")
-    private ResponseEntity<GenericResponse<Book>> createBook(@RequestBody @Valid BookCreateRequest bookCreateRequest) {
-        // Validation should be here
-        Book book = bookService.createBook(bookCreateRequest);
+    @GetMapping()
+    private ResponseEntity<List<Book>> getAllBooks(){
+        List<Book> response=bookService.getAllBooks();
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 
-        GenericResponse<Book> response = new GenericResponse<Book>(book, "", "Sucess", 200);
+    @PostMapping("/create")
+    private ResponseEntity<GenericResponse<Book>> createBook(@RequestBody @Valid BookCreateRequest bookCreateRequest) throws TxnException {
+        // Validation should be here
+        if(bookService.SearchBookNo(bookCreateRequest.getBookNo())){
+            throw new TxnException("Book No is already exist.");
+        }
+        Book book = bookService.createBook(bookCreateRequest);
+        GenericResponse<Book> response = new GenericResponse<Book>(book, "", "Success", 200);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -40,7 +50,6 @@ public class BookController {
 
         List<Book> list = bookService.filter(filterBy, operator, value);
         GenericResponse<List<Book>> response = new GenericResponse<List<Book>>(list, "", "success", 200);
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

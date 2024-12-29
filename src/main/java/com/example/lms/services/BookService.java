@@ -4,6 +4,7 @@ import com.example.lms.models.*;
 import com.example.lms.repository.AuthorRepository;
 import com.example.lms.repository.BookRepository;
 import com.example.lms.request.BookCreateRequest;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,26 +30,30 @@ public class BookService {
         Book book = bookCreateRequest.toBook();
         book.setAuthor(authorFromDB);
         return bookRepository.save(book);
-
     }
 
     public List<Book> filter(FilterType filterBy, Operator operator, String value) {
         switch (operator) {
             case EQUALS:
-                switch (filterBy) {
-                    case BOOK_NO:
-                        return bookRepository.findByBookNo(value);
-                    case AUTHOR_NAME:
-                        return bookRepository.findByAuthorName(value);
-                    case COST:
-                        return bookRepository.findByCost(Integer.parseInt(value));
-                    case BOOKTYPE:
-                        return bookRepository.findByBookType(BookType.valueOf(value));
-                }
+                return switch (filterBy) {
+                    case BOOK_NO -> bookRepository.findByBookNo(value);
+                    case AUTHOR_NAME -> bookRepository.findByAuthorName(value);
+                    case COST -> bookRepository.findByCost(Integer.parseInt(value));
+                    case BOOKTYPE -> bookRepository.findByBookType(BookType.valueOf(value));
+                };
             case LESS_THAN:
                 switch (filterBy) {
                     case COST:
                         return bookRepository.findByCostLessThan(Integer.parseInt(value));
+                    case BOOK_NO:
+                        return bookRepository.findByBookNoLessThan(value);
+                }
+            case GREATER_THAN:
+                switch (filterBy){
+                    case COST:
+                        return bookRepository.findByCostGreaterThan(Integer.parseInt(value));
+                    case BOOK_NO:
+                        return bookRepository.findByBookNoGreaterThan((value));
                 }
             default:
                 return new ArrayList<>();
@@ -59,6 +64,15 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    // filter by urself for student
+    public List<Book> getAllBooks() {
+        return bookRepository.findAll();
+    }
+
+    public boolean SearchBookNo(String bookNo) {
+        List<Book> books=bookRepository.findByBookNo(bookNo);
+        return !books.isEmpty();
+    }
+
+    // filter by yourself for student
 // author, should have one more column contact u have to make email nullable true (ddl auto should be update)
 }

@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class StudentService implements UserDetailsService {
@@ -38,26 +39,24 @@ public class StudentService implements UserDetailsService {
             GenericResponse<Student> response = GenericResponse.<Student>builder().data(studentFromDB).code(200).message("Success").build();
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
-        GenericResponse<Student> response = GenericResponse.<Student>builder().data(null).code(200).message("phoneNo should be unique.").error("phoneNo is already exist").build();
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        GenericResponse<Student> response = GenericResponse.<Student>builder().data(null).code(400).message("phoneNo should be unique.").error("phoneNo is already exist").build();
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     public List<Student> filter(StudentFilterType filterBy, Operator operator, String value) {
-        switch (operator) {
-            case EQUALS:
-                return switch (filterBy) {
-                    case CONTACT -> studentRepository.findByPhoneNo(value);
-                    case NAME -> studentRepository.findByName(value);
-                    case EMAIL -> studentRepository.findByEmail(value);
-                };
-            default:
-                return new ArrayList<>();
+        if (Objects.requireNonNull(operator) == Operator.EQUALS) {
+            return switch (filterBy) {
+                case CONTACT -> studentRepository.findByPhoneNo(value);
+                case NAME -> studentRepository.findByName(value);
+                case EMAIL -> studentRepository.findByEmail(value);
+            };
         }
+        return new ArrayList<>();
     }
 
     @Override
     public UserDetails loadUserByUsername(String phoneNo) throws UsernameNotFoundException {
-        if(! studentRepository.findByPhoneNo(phoneNo).isEmpty()){
+        if(!studentRepository.findByPhoneNo(phoneNo).isEmpty()){
             return studentRepository.findByPhoneNo(phoneNo).get(0);
         }
         return null;

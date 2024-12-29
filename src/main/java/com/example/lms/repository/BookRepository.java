@@ -13,4 +13,9 @@ public interface BookRepository extends JpaRepository<Book,Integer> {
     List<Book> findByCost(int cost);
     List<Book> findByBookType(BookType bookType);
     List<Book> findByCostLessThan(int cost);
+    List<Book> findByCostGreaterThan(int cost);
+
+    List<Book> findByBookNoGreaterThan(String bookNo);
+    List<Book> findByBookNoLessThan(String bookNo);
+    ;
 }
